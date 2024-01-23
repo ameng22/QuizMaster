@@ -2,6 +2,7 @@ Group 5
 
 * Amen George
 * Reshma Mol Karottuputhenparambil Ravichandran
+* Muhammed Arif Kallarackal Haris
 
 App name : QuizMaster
 
