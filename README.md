@@ -22,3 +22,7 @@ Features
 * Accept user details who attempt the quiz
 * Filter through the quizzes
 * Shortcut buttons to navigate through the app more easily
+* Hint system for challenging questions to aid users without giving away the answer completely
+* Social media integration that enables users to share their quiz results on social media platform
+* Timer for questions
+* Offer links to additional educational resources related to the quiz topics for users
