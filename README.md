@@ -17,7 +17,7 @@ Features
 * Download the final result as pdf
 * Dark and light mode
 * Display notifications for downloads
-* Progess tracker for the quiz
+* Progess bar
 * Search for quizzes
 * Store and view previous results.
 * Accept user details who attempt the quiz
