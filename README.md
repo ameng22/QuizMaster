@@ -12,12 +12,12 @@ QuizMaster will allow users to do various quizzes and get the results immediatel
 Features
 
 * attempt the quiz
-* Display the correct and wrong(if selected) answer in different colours
+* Provide colours for correct and wrong options.
 * Display the final result
 * Download the final result as pdf
 * Dark and light mode
 * Display notifications for downloads
-* Do different quizzes
+* Progess tracker for the quiz
 * Search for quizzes
 * Store and view previous results.
 * Accept user details who attempt the quiz
