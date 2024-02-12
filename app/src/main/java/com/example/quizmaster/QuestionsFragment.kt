@@ -1,17 +1,24 @@
 package com.example.quizmaster
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Html
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
+import androidx.core.view.marginBottom
+import androidx.core.view.setPadding
 import com.example.quizmaster.databinding.FragmentQuestionsBinding
 import com.example.quizmaster.model.Quiz
 import com.example.quizmaster.model.QuizQuestion
@@ -35,6 +42,7 @@ class QuestionsFragment : Fragment() {
     private var difficulty = ""
     private var category = ""
     private var amount = ""
+    private lateinit var timer:CountDownTimer
     private val binding get() = fragmentQuestionsBinding!!
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://opentdb.com/")
@@ -60,10 +68,22 @@ class QuestionsFragment : Fragment() {
         fragmentQuestionsBinding = FragmentQuestionsBinding.inflate(inflater, container, false)
         val view = fragmentQuestionsBinding!!.root
 
+        timer = object: CountDownTimer(20000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                fragmentQuestionsBinding!!.counterTV.text = secondsRemaining.toString()
+            }
+
+            override fun onFinish() {
+                fragmentQuestionsBinding!!.submitBtn.performClick()
+            }
+        }
+
         fetchQuizData()
 
+
         fragmentQuestionsBinding!!.submitBtn.setOnClickListener {
-            var id = fragmentQuestionsBinding!!.optionRadioGroup.checkedRadioButtonId
+            val id = fragmentQuestionsBinding!!.optionRadioGroup.checkedRadioButtonId
             if (id==-1){
                 Toast.makeText(context, "no option selected", Toast.LENGTH_SHORT).show()
             }else{
@@ -76,6 +96,7 @@ class QuestionsFragment : Fragment() {
             }
             questionIndex++
             if (questionIndex>=quiz.results.size){
+                timer.cancel()
                 Toast.makeText(context, "No more questions", Toast.LENGTH_SHORT).show()
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, ResultsFragment.newInstance(correctAnswers,quiz.results.size))
@@ -89,6 +110,7 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun fetchQuizData() {
+
         GlobalScope.launch(Dispatchers.Main) {
             try {
                 quiz = api.getQuiz(amount = amount.toInt(), category = category.toInt(), difficulty = difficulty, type = type)
@@ -100,6 +122,7 @@ class QuestionsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ResourceType")
     private fun displayQuestion(
         quiz: QuizQuestion
     ) {
@@ -112,7 +135,7 @@ class QuestionsFragment : Fragment() {
         optionRadioGroup.removeAllViews()
         optionRadioGroup.clearCheck()
 
-        var options:ArrayList<String> = quiz.incorrectAnswers
+        val options:ArrayList<String> = quiz.incorrectAnswers
         options.add(quiz.correctAnswer)
 
         // Add options dynamically
@@ -120,8 +143,21 @@ class QuestionsFragment : Fragment() {
             val radioButton = RadioButton(requireContext())
             radioButton.text = parseHtmlEntities(option)
             radioButton.id = idx
+            radioButton.background = context?.let { ContextCompat.getDrawable(it, R.drawable.quiz_options_selector) }
+            radioButton.setPadding(16)
+            radioButton.gravity = Gravity.CENTER_HORIZONTAL
+            radioButton.buttonDrawable = ContextCompat.getDrawable(requireContext(), android.R.color.transparent)
+            radioButton.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.radio_text_selector))
+            val params = ViewGroup.MarginLayoutParams(
+                ViewGroup.MarginLayoutParams.MATCH_PARENT,
+                ViewGroup.MarginLayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(30, 0, 30, 20) // Set your desired margin here
+            radioButton.layoutParams = params
             optionRadioGroup.addView(radioButton)
         }
+        timer.cancel()
+        timer.start()
     }
 
     override fun onDestroyView() {
@@ -129,6 +165,7 @@ class QuestionsFragment : Fragment() {
         fragmentQuestionsBinding = null
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     fun parseHtmlEntities(input: String): CharSequence {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY)

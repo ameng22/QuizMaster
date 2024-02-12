@@ -50,7 +50,8 @@
             android:textSize="16sp"
             android:padding="10dp"
             android:layout_marginRight="8dp"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:checked="true"/>
 
         <RadioButton
             android:id="@+id/t_or_f"
@@ -95,6 +96,7 @@
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:text="Easy"
+                android:checked="true"
                 android:textSize="16sp"
                 android:padding="10dp"
                 android:textAlignment="center"
@@ -144,7 +146,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/no_of_questions"/>
+            android:id="@+id/no_of_questions" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
