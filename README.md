@@ -23,7 +23,7 @@ Features
 * Accept user details who attempt the quiz
 * Filter through the quizzes by category
 * Shortcut buttons to navigate through the app more easily
-* Randomize the question order to enhance quiz variability.
+* Settings to customize the timer.
 * Different sounds played for correct and wrong answers.
 * Timer for questions
 * Offer links to additional educational resources related to the quiz topics for users
