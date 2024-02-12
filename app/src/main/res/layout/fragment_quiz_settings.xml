@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuizSettingsFragment"
+    tools:context=".QuestionSettingsFragment"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -20,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,17 +40,30 @@
 
         <RadioButton
             android:id="@+id/mcq"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="MCQ"
-            android:textSize="16dp"/>
+            android:button="@android:color/transparent"
+            android:background="@drawable/radio_selector"
+            android:textColor="@drawable/radio_text"
+            android:elevation="4dp"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_marginRight="8dp"
+            android:textAlignment="center"/>
 
         <RadioButton
             android:id="@+id/t_or_f"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="True/False"
-            android:textSize="16dp"/>
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:button="@android:color/transparent"
+            android:background="@drawable/radio_selector"
+            android:textColor="@drawable/radio_text"
+            android:elevation="4dp" />
 
     </RadioGroup>
 
@@ -59,13 +73,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginBottom="30dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Difficulty"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"/>
 
@@ -78,24 +92,44 @@
 
             <RadioButton
                 android:id="@+id/easy_rb"
-                android:layout_width="wrap_content"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:text="Easy"
-                android:textSize="16dp" />
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:textAlignment="center"
+                android:button="@android:color/transparent"
+                android:background="@drawable/radio_selector"
+                android:textColor="@drawable/radio_text"
+                android:elevation="4dp"
+                android:layout_marginRight="8dp"/>
 
             <RadioButton
                 android:id="@+id/med_rb"
-                android:layout_width="wrap_content"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:text="Med"
-                android:textSize="16dp"/>
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:textAlignment="center"
+                android:button="@android:color/transparent"
+                android:background="@drawable/radio_selector"
+                android:textColor="@drawable/radio_text"
+                android:elevation="4dp"
+                android:layout_marginRight="8dp"/>
 
             <RadioButton
                 android:id="@+id/hard_rb"
-                android:layout_width="wrap_content"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:text="Hard"
-                android:textSize="16dp"/>
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:textAlignment="center"
+                android:button="@android:color/transparent"
+                android:background="@drawable/radio_selector"
+                android:textColor="@drawable/radio_text"
+                android:elevation="4dp" />
 
         </RadioGroup>
 
@@ -104,7 +138,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter the number of questions">
+        android:hint="Enter the number of questions"
+        android:layout_marginBottom="30dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -118,6 +153,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit Settings"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#E29264"/>
 
 </LinearLayout>

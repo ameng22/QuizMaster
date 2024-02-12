@@ -21,7 +21,7 @@ class HomeFragment : Fragment() {
         val view = fragmentHomeBinding!!.root
 
         fragmentHomeBinding!!.generalCard.setOnClickListener{
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuizSettingsFragment()).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionSettingsFragment()).commit()
         }
 
         return view;

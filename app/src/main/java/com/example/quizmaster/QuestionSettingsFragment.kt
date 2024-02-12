@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import com.example.quizmaster.databinding.FragmentQuizSettingsBinding
 
-class QuizSettingsFragment : Fragment() {
+class QuestionSettingsFragment : Fragment() {
 
     private var fragmentQuizSettingsBinding:FragmentQuizSettingsBinding?=null
     private var selectedType:String = ""
