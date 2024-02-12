@@ -13,15 +13,15 @@ Features
 
 * attempt the quiz
 * Provide colours for correct and wrong options.
-* Display the final result
+* Select the settings for the Quiz
 * Download the final result as pdf
 * Dark and light mode
 * Display notifications for downloads
 * Progess bar
-* Search for quizzes
+* Search for quizzes by name
 * Store and view previous results.
 * Accept user details who attempt the quiz
-* Filter through the quizzes
+* Filter through the quizzes by category
 * Shortcut buttons to navigate through the app more easily
 * Randomize the question order to enhance quiz variability.
 * Different sounds played for correct and wrong answers.
