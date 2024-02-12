@@ -12,11 +12,6 @@ import com.example.quizmaster.databinding.FragmentResultsBinding
 private const val ARG_CORRECT_ANSWERS = "correctAnswers"
 private const val ARG_QUIZ_SIZE = "quizSize"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ResultsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ResultsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var correctAnswers: Int = 0

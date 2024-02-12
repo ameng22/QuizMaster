@@ -13,7 +13,7 @@ Features
 
 * attempt the quiz
 * Provide colours for correct and wrong options.
-* Select the settings for the Quiz
+* Select the settings for the Questions
 * Download the final result as pdf
 * Dark and light mode
 * Display notifications for downloads

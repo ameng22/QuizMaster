@@ -3,6 +3,7 @@ package com.example.quizmaster
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,18 +21,37 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+private const val QUIZ_TYPE = "type"
+private const val QUIZ_DIFFICULTY= "difficulty"
+private const val QUIZ_CATEGORY= "category"
+private const val NUMBER_OF_QUESTIONS= "amount"
 class QuestionsFragment : Fragment() {
     private lateinit var quiz: Quiz;
 
     private var fragmentQuestionsBinding: FragmentQuestionsBinding? = null
     private var questionIndex = 0
     var correctAnswers:Int = 0
+    private var type = ""
+    private var difficulty = ""
+    private var category = ""
+    private var amount = ""
     private val binding get() = fragmentQuestionsBinding!!
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://opentdb.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val api = retrofit.create(Api::class.java)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            type = it.getString(QUIZ_TYPE).toString()
+            difficulty = it.getString(QUIZ_DIFFICULTY).toString()
+            category = it.getString(QUIZ_CATEGORY).toString()
+            amount = it.getString(NUMBER_OF_QUESTIONS).toString()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,10 +91,11 @@ class QuestionsFragment : Fragment() {
     private fun fetchQuizData() {
         GlobalScope.launch(Dispatchers.Main) {
             try {
-                quiz = api.getQuiz(amount = 10, category = 9, difficulty = "easy", type = "multiple")
+                quiz = api.getQuiz(amount = amount.toInt(), category = category.toInt(), difficulty = difficulty, type = type)
                 displayQuestion(quiz.results[0])
             } catch (e: Exception) {
                 Toast.makeText(context, "Error in fetching quiz", Toast.LENGTH_SHORT).show()
+                Log.d("Fetch",e.toString())
             }
         }
     }
@@ -114,6 +135,19 @@ class QuestionsFragment : Fragment() {
         } else {
             HtmlCompat.fromHtml(input, FROM_HTML_MODE_LEGACY)
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(quizType: String, quizDifficulty: String, quizCategory:String,numOfQuestions:String) =
+            QuestionsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(QUIZ_TYPE, quizType)
+                    putString(QUIZ_DIFFICULTY, quizDifficulty)
+                    putString(QUIZ_CATEGORY,quizCategory)
+                    putString(NUMBER_OF_QUESTIONS,numOfQuestions)
+                }
+            }
     }
 
 }

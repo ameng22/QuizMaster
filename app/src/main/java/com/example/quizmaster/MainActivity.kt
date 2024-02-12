@@ -12,9 +12,9 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
-        val quizFragment = QuizFragment()
+        val homeFragment = HomeFragment()
 
-        setFragment(quizFragment)
+        setFragment(homeFragment)
     }
 
     private fun setFragment(fragment: Fragment) {
