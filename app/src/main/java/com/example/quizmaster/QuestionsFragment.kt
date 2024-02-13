@@ -109,6 +109,25 @@ class QuestionsFragment : Fragment() {
         return view
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentQuestionsBinding = null
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(quizType: String, quizDifficulty: String, quizCategory:String,numOfQuestions:String) =
+            QuestionsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(QUIZ_TYPE, quizType)
+                    putString(QUIZ_DIFFICULTY, quizDifficulty)
+                    putString(QUIZ_CATEGORY,quizCategory)
+                    putString(NUMBER_OF_QUESTIONS,numOfQuestions)
+                }
+            }
+    }
+
     private fun fetchQuizData() {
 
         GlobalScope.launch(Dispatchers.Main) {
@@ -160,11 +179,6 @@ class QuestionsFragment : Fragment() {
         timer.start()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        fragmentQuestionsBinding = null
-    }
-
     @SuppressLint("ObsoleteSdkInt")
     fun parseHtmlEntities(input: String): CharSequence {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -172,19 +186,6 @@ class QuestionsFragment : Fragment() {
         } else {
             HtmlCompat.fromHtml(input, FROM_HTML_MODE_LEGACY)
         }
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(quizType: String, quizDifficulty: String, quizCategory:String,numOfQuestions:String) =
-            QuestionsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(QUIZ_TYPE, quizType)
-                    putString(QUIZ_DIFFICULTY, quizDifficulty)
-                    putString(QUIZ_CATEGORY,quizCategory)
-                    putString(NUMBER_OF_QUESTIONS,numOfQuestions)
-                }
-            }
     }
 
 }
