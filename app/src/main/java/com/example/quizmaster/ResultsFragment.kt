@@ -2,12 +2,20 @@ package com.example.quizmaster
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
+import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.quizmaster.databinding.FragmentResultsBinding
+import java.io.File
+import java.io.FileOutputStream
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +49,9 @@ class ResultsFragment : Fragment() {
 
         displayResults()
 
+        binding?.downloadBtn?.setOnClickListener {
+            generatePdf()
+        }
         return view
     }
 
@@ -65,6 +76,47 @@ class ResultsFragment : Fragment() {
             else->feedback="Fail. Work Harder"
         }
         binding!!.feedback.text = feedback
+    }
+
+    private fun generatePdf() {
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas: Canvas = page.canvas
+        val paint = Paint()
+        paint.color = Color.BLACK
+
+        val titlePaint = Paint().apply {
+            color = Color.BLACK
+            textSize = 24f
+            isFakeBoldText = true
+            textAlign = Paint.Align.CENTER
+        }
+
+        val contentPaint = Paint().apply {
+            color = Color.BLACK
+            textSize = 16f
+            textAlign = Paint.Align.LEFT
+        }
+
+        val lineHeight = 30f
+
+        canvas.drawText("Quiz Results", pageInfo.pageWidth.toFloat() / 2, lineHeight, titlePaint)
+        canvas.drawText("Score: ${correctAnswers}/${quizSize}", 20f, lineHeight * 3, contentPaint)
+        val name = sharedPreferences.getString("name", "")
+        val dob = sharedPreferences.getString("dob", "")
+        val gender = sharedPreferences.getString("gender", "")
+        canvas.drawText("Participant Name: $name", 20f, lineHeight * 5, contentPaint)
+        canvas.drawText("Participant Age: $dob", 20f, lineHeight * 6, contentPaint)
+        canvas.drawText("Participant Gender: $gender", 20f, lineHeight * 7, contentPaint)
+
+        pdfDocument.finishPage(page)
+
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(downloadsDir, "quiz_results.pdf")
+
+        pdfDocument.writeTo(FileOutputStream(file))
+        pdfDocument.close()
     }
 
     override fun onDestroyView() {
