@@ -1,5 +1,7 @@
 package com.example.quizmaster
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,12 +19,16 @@ class ResultsFragment : Fragment() {
     private var correctAnswers: Int = 0
     private var quizSize: Int = 0
     private var binding:FragmentResultsBinding?=null
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             correctAnswers = it.getInt(ARG_CORRECT_ANSWERS)
             quizSize = it.getInt(ARG_QUIZ_SIZE)
         }
+
+        sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetails", Context.MODE_PRIVATE)
+
     }
 
     override fun onCreateView(
@@ -41,6 +47,14 @@ class ResultsFragment : Fragment() {
     private fun displayResults() {
         binding!!.score.text = correctAnswers.toString()
         binding!!.numOfQuestions.text = quizSize.toString()
+        val name = sharedPreferences.getString("name", "")
+        val dob = sharedPreferences.getString("dob", "")
+        val gender = sharedPreferences.getString("gender", "")
+
+        // Display the retrieved details wherever necessary in your layout
+        binding!!.participantName.text = name
+        binding!!.participantAge.text = dob
+        binding!!.participantGender.text = gender
 
         val percentage:Int = (correctAnswers*100)/quizSize
         var feedback:String = ""
