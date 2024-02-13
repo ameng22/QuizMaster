@@ -38,7 +38,7 @@ class QuestionSettingsFragment : Fragment() {
             showDatePicker()
         }
 
-        sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetails", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetailsSharedPref", Context.MODE_PRIVATE)
 
 
         fragmentQuizSettingsBinding!!.subBtn.setOnClickListener {

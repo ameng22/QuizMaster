@@ -27,7 +27,7 @@ class ResultsFragment : Fragment() {
             quizSize = it.getInt(ARG_QUIZ_SIZE)
         }
 
-        sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetails", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetailsSharedPref", Context.MODE_PRIVATE)
 
     }
 
