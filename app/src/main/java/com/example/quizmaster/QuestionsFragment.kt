@@ -63,7 +63,7 @@ class QuestionsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         fragmentQuestionsBinding = FragmentQuestionsBinding.inflate(inflater, container, false)
         val view = fragmentQuestionsBinding!!.root
@@ -95,6 +95,7 @@ class QuestionsFragment : Fragment() {
                 Toast.makeText(context, "Option selected: $selectedOption $correctAnswers", Toast.LENGTH_SHORT).show()
             }
             questionIndex++
+            updateProgress(questionIndex)
             if (questionIndex>=quiz.results.size){
                 timer.cancel()
                 Toast.makeText(context, "No more questions", Toast.LENGTH_SHORT).show()
@@ -134,6 +135,7 @@ class QuestionsFragment : Fragment() {
             try {
                 quiz = api.getQuiz(amount = amount.toInt(), category = category.toInt(), difficulty = difficulty, type = type)
                 displayQuestion(quiz.results[0])
+                binding.questionProgressBar.max = quiz.results.size
             } catch (e: Exception) {
                 Toast.makeText(context, "Error in fetching quiz", Toast.LENGTH_SHORT).show()
                 Log.d("Fetch",e.toString())
@@ -187,5 +189,10 @@ class QuestionsFragment : Fragment() {
             HtmlCompat.fromHtml(input, FROM_HTML_MODE_LEGACY)
         }
     }
+
+    private fun updateProgress(currentQuestionIndex:Int) {
+        binding.questionProgressBar.progress = currentQuestionIndex
+    }
+
 
 }

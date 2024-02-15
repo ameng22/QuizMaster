@@ -36,6 +36,15 @@
         android:layout_gravity="center"
         android:id="@+id/counterTV"/>
 
+    <ProgressBar
+        android:id="@+id/questionProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:max="100"
+        android:progress="0" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
