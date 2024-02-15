@@ -125,22 +125,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/download_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Download Result"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Download Result" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Result"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Save Result" />
 
     </LinearLayout>
 

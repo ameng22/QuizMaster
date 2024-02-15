@@ -1,13 +1,16 @@
 package com.example.quizmaster
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +19,7 @@ import android.widget.Toast
 import com.example.quizmaster.databinding.FragmentResultsBinding
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,7 +54,7 @@ class ResultsFragment : Fragment() {
         displayResults()
 
         binding?.downloadBtn?.setOnClickListener {
-            generatePdf()
+            requestStoragePermission()
         }
         return view
     }
@@ -78,7 +82,12 @@ class ResultsFragment : Fragment() {
         binding!!.feedback.text = feedback
     }
 
-    private fun generatePdf() {
+    private fun requestStoragePermission() {
+        val activity = requireActivity() as MainActivity
+        activity.requestPermissionIfNeeded()
+    }
+
+    fun generatePdf() {
         val pdfDocument = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
         val page = pdfDocument.startPage(pageInfo)
@@ -112,11 +121,47 @@ class ResultsFragment : Fragment() {
 
         pdfDocument.finishPage(page)
 
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(downloadsDir, "quiz_results.pdf")
+        downloadPDF(pdfDocument)
 
-        pdfDocument.writeTo(FileOutputStream(file))
         pdfDocument.close()
+    }
+
+    private fun downloadPDF(pdfDocument: PdfDocument){
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, "${System.currentTimeMillis()}_quiz_results.pdf")
+                put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            }
+
+            val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                requireContext().contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+            } else {
+                TODO("VERSION.SDK_INT < Q")
+            }
+            uri?.let { outputStream ->
+                try {
+                    requireContext().contentResolver.openOutputStream(outputStream)?.use { pdfDocument.writeTo(it) }
+                    Toast.makeText(requireContext(), "PDF saved to Downloads the directory", Toast.LENGTH_SHORT).show()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
+                } finally {
+                    pdfDocument.close()
+                }
+            }
+        }else{
+            try {
+                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val file = File(downloadsDir, "${System.currentTimeMillis()}_quiz_results.pdf")
+                pdfDocument.writeTo(FileOutputStream(file))
+                Toast.makeText(requireContext(), "PDF saved to Downloads directory", Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
     override fun onDestroyView() {
