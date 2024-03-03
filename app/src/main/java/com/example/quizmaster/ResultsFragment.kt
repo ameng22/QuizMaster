@@ -1,8 +1,12 @@
 package com.example.quizmaster
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -16,7 +20,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.example.quizmaster.databinding.FragmentResultsBinding
+import okhttp3.internal.notify
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -25,6 +31,8 @@ import java.io.IOException
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_CORRECT_ANSWERS = "correctAnswers"
 private const val ARG_QUIZ_SIZE = "quizSize"
+private const val CHANNEL_ID = "channel1"
+private const val NOTIFICATION_ID = 1
 
 class ResultsFragment : Fragment() {
     // TODO: Rename and change types of parameters
@@ -32,6 +40,12 @@ class ResultsFragment : Fragment() {
     private var quizSize: Int = 0
     private var binding:FragmentResultsBinding?=null
     private lateinit var sharedPreferences: SharedPreferences
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    private val channelId = "i.apps.notifications"
+    private val description = "Download notification"
+    lateinit var builder: Notification.Builder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -142,9 +156,11 @@ class ResultsFragment : Fragment() {
             uri?.let { outputStream ->
                 try {
                     requireContext().contentResolver.openOutputStream(outputStream)?.use { pdfDocument.writeTo(it) }
+                    createNotificationChannel(true)
                     Toast.makeText(requireContext(), "PDF saved to Downloads the directory", Toast.LENGTH_SHORT).show()
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    createNotificationChannel(false)
                     Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
                 } finally {
                     pdfDocument.close()
@@ -155,13 +171,50 @@ class ResultsFragment : Fragment() {
                 val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 val file = File(downloadsDir, "${System.currentTimeMillis()}_quiz_results.pdf")
                 pdfDocument.writeTo(FileOutputStream(file))
+                createNotificationChannel(true)
                 Toast.makeText(requireContext(), "PDF saved to Downloads directory", Toast.LENGTH_SHORT).show()
             } catch (e: IOException) {
                 e.printStackTrace()
+                createNotificationChannel(false)
                 Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
             }
 
         }
+    }
+
+    private fun createNotificationChannel(flag:Boolean){
+        notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (flag == true){
+            displayNotifications("Dowload Finished","Your download is Complete",R.drawable.download_success)
+        }else{
+            displayNotifications("Dowload Failed","Sorry, Your download could not be completed! ",R.drawable.download_fail)
+        }
+    }
+
+    private fun displayNotifications(title:String,text:String,iconId:Int){
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.GREEN
+            notificationChannel.enableVibration(false)
+            notificationManager.createNotificationChannel(notificationChannel)
+
+            builder = Notification.Builder(context, channelId)
+                .setSmallIcon(iconId)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, iconId))
+                .setContentTitle(title)
+                .setContentText(text)
+
+        }else{
+            builder = Notification.Builder(context)
+                .setSmallIcon(iconId)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, iconId))
+                .setContentTitle(title)
+                .setContentText(text)
+        }
+        notificationManager.notify(NOTIFICATION_ID,builder.build())
+
     }
 
     override fun onDestroyView() {
