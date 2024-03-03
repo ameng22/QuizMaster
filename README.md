@@ -18,7 +18,7 @@ Features
 * Dark and light mode
 * Display notifications for downloads
 * Progess bar
-* Search for quizzes by name
+* provide an instruction page for users.
 * Store and view previous results.
 * Accept user details who attempt the quiz
 * Filter through the quizzes by category
