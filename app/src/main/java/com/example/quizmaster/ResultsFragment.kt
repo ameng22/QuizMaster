@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,15 +28,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_CORRECT_ANSWERS = "correctAnswers"
 private const val ARG_QUIZ_SIZE = "quizSize"
 private const val CHANNEL_ID = "channel1"
 private const val NOTIFICATION_ID = 1
 
 class ResultsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var correctAnswers: Int = 0
     private var quizSize: Int = 0
     private var binding:FragmentResultsBinding?=null
@@ -45,6 +45,9 @@ class ResultsFragment : Fragment() {
     private val channelId = "i.apps.notifications"
     private val description = "Download notification"
     lateinit var builder: Notification.Builder
+    private lateinit var name:String
+    private lateinit var dob:String
+    private lateinit var gender:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +57,9 @@ class ResultsFragment : Fragment() {
         }
 
         sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetailsSharedPref", Context.MODE_PRIVATE)
+        name = sharedPreferences.getString("name", "").toString()
+        dob = sharedPreferences.getString("dob", "").toString()
+        gender = sharedPreferences.getString("gender", "").toString()
 
     }
 
@@ -70,17 +76,38 @@ class ResultsFragment : Fragment() {
         binding?.downloadBtn?.setOnClickListener {
             requestStoragePermission()
         }
+
+        binding?.saveBtn?.setOnClickListener {
+            saveResult()
+        }
+
         return view
+    }
+
+    private fun saveResult(){
+        val db = context?.let { DBHelper(it, null) }
+
+        if (db != null) {
+            if (correctAnswers.toString() != "" && quizSize.toString() != "") {
+                db.addData(name, dob, gender, correctAnswers.toString(), quizSize.toString())
+
+                Log.d("Data Insertion", "Attempting to insert data into the database")
+
+                Log.d("Navigation", "Navigating to PreviousResultFragment")
+
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, PreviousResultFragment())
+                    .commit()
+            }
+        } else {
+            Toast.makeText(context, "No Database Found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun displayResults() {
         binding!!.score.text = correctAnswers.toString()
         binding!!.numOfQuestions.text = quizSize.toString()
-        val name = sharedPreferences.getString("name", "")
-        val dob = sharedPreferences.getString("dob", "")
-        val gender = sharedPreferences.getString("gender", "")
 
-        // Display the retrieved details wherever necessary in your layout
         binding!!.participantName.text = name
         binding!!.participantAge.text = dob
         binding!!.participantGender.text = gender

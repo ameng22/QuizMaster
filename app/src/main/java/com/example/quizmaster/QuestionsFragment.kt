@@ -74,6 +74,8 @@ class QuestionsFragment : Fragment() {
         fragmentQuestionsBinding = FragmentQuestionsBinding.inflate(inflater, container, false)
         val view = fragmentQuestionsBinding!!.root
 
+        val db = context?.let { DBHelper(it, null) }
+
         correctAnswerSound = MediaPlayer.create(context, R.raw.correctanswer)
         wrongAnswerSound = MediaPlayer.create(context, R.raw.wronganswer)
 
@@ -113,9 +115,9 @@ class QuestionsFragment : Fragment() {
             questionIndex++
             updateProgress(questionIndex)
             if (questionIndex >= quiz.results.size) {
-                // Check if this is the last question before canceling the timer
                 timer.cancel()
                 Toast.makeText(context, "No more questions", Toast.LENGTH_SHORT).show()
+
                 Handler(Looper.getMainLooper()).postDelayed({
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragment, ResultsFragment.newInstance(correctAnswers, quiz.results.size))
@@ -174,7 +176,6 @@ class QuestionsFragment : Fragment() {
         val questionTextView = fragmentQuestionsBinding!!.questionTv
         val optionRadioGroup = fragmentQuestionsBinding!!.optionRadioGroup
 
-        // Set the question text
         questionTextView.text = parseHtmlEntities(quiz.question)
 
         optionRadioGroup.removeAllViews()
@@ -183,7 +184,6 @@ class QuestionsFragment : Fragment() {
         val options:ArrayList<String> = quiz.incorrectAnswers
         options.add(quiz.correctAnswer)
 
-        // Add options dynamically
         options.forEachIndexed{ idx,option ->
             val radioButton = RadioButton(requireContext())
             radioButton.text = parseHtmlEntities(option)
