@@ -2,9 +2,12 @@ package com.example.quizmaster
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.util.Log
 import android.view.Gravity
@@ -43,6 +46,9 @@ class QuestionsFragment : Fragment() {
     private var category = ""
     private var amount = ""
     private lateinit var timer:CountDownTimer
+    private lateinit var correctAnswerSound: MediaPlayer
+    private lateinit var wrongAnswerSound: MediaPlayer
+
     private val binding get() = fragmentQuestionsBinding!!
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://opentdb.com/")
@@ -68,6 +74,9 @@ class QuestionsFragment : Fragment() {
         fragmentQuestionsBinding = FragmentQuestionsBinding.inflate(inflater, container, false)
         val view = fragmentQuestionsBinding!!.root
 
+        correctAnswerSound = MediaPlayer.create(context, R.raw.correctanswer)
+        wrongAnswerSound = MediaPlayer.create(context, R.raw.wronganswer)
+
         timer = object: CountDownTimer(20000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = millisUntilFinished / 1000
@@ -84,26 +93,39 @@ class QuestionsFragment : Fragment() {
 
         fragmentQuestionsBinding!!.submitBtn.setOnClickListener {
             val id = fragmentQuestionsBinding!!.optionRadioGroup.checkedRadioButtonId
-            if (id==-1){
-                Toast.makeText(context, "no option selected", Toast.LENGTH_SHORT).show()
-            }else{
+            if (id == -1) {
+                Toast.makeText(context, "No option selected", Toast.LENGTH_SHORT).show()
+            } else {
                 val selectedRadioButton = fragmentQuestionsBinding!!.optionRadioGroup.findViewById<RadioButton>(id)
                 val selectedOption = selectedRadioButton.text.toString()
-                if (selectedOption == quiz.results[questionIndex].correctAnswer){
-                    correctAnswers++;
+                try {
+                    if (selectedOption == quiz.results[questionIndex].correctAnswer) {
+                        correctAnswerSound.start()
+                        correctAnswers++
+                    } else {
+                        wrongAnswerSound.start()
+                    }
+                } catch (e: Exception) {
+                    Log.e("SoundError", "Error playing sound: ${e.message}")
                 }
                 Toast.makeText(context, "Option selected: $selectedOption $correctAnswers", Toast.LENGTH_SHORT).show()
             }
             questionIndex++
             updateProgress(questionIndex)
-            if (questionIndex>=quiz.results.size){
+            if (questionIndex >= quiz.results.size) {
+                // Check if this is the last question before canceling the timer
                 timer.cancel()
                 Toast.makeText(context, "No more questions", Toast.LENGTH_SHORT).show()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragment, ResultsFragment.newInstance(correctAnswers,quiz.results.size))
-                    .commit()
-            }else{
+                Handler(Looper.getMainLooper()).postDelayed({
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, ResultsFragment.newInstance(correctAnswers, quiz.results.size))
+                        .commit()
+                }, 500)
+            } else {
+                // For other questions, display the next question
                 displayQuestion(quiz.results[questionIndex])
+                timer.cancel()
+                timer.start()
             }
         }
 
@@ -114,6 +136,8 @@ class QuestionsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentQuestionsBinding = null
+        correctAnswerSound.release()
+        wrongAnswerSound.release()
     }
 
     companion object {
