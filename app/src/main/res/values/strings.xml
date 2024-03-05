@@ -2,4 +2,8 @@
     <string name="app_name">QuizMaster</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="quiz_instructions">
+        Welcome to the Quiz App! Here are the instructions:
+    </string>
+
 </resources>
