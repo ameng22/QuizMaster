@@ -220,6 +220,8 @@ class ResultsFragment : Fragment() {
 
     private fun displayNotifications(title:String,text:String,iconId:Int){
 
+
+
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
             notificationChannel.enableLights(true)
