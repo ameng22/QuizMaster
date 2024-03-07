@@ -18,6 +18,16 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
+        activityMainBinding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId){
+                R.id.home->{setFragment(HomeFragment())
+                true}
+
+                else -> {setFragment(HomeFragment())
+                true}
+            }
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

@@ -52,7 +52,9 @@ class QuestionSettingsFragment : Fragment() {
             val selectedGenderRadioButton = view.findViewById<RadioButton>(selectedGenderRadioButtonId)
             gender = selectedGenderRadioButton.text.toString()
 
-            if (name.isEmpty() || dob.isEmpty()) {
+            numOfQuestions = fragmentQuizSettingsBinding!!.noOfQuestions.text.toString()
+
+            if (name.isEmpty() || dob.isEmpty()||numOfQuestions.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter all fields", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
@@ -79,10 +81,6 @@ class QuestionSettingsFragment : Fragment() {
             selectedDifficulty = selectedDifficultyRadioButton.text.toString()
             if (selectedDifficulty=="Med"){
                 selectedDifficulty = "medium"
-            }
-            numOfQuestions = fragmentQuizSettingsBinding!!.noOfQuestions.text.toString()
-            if (numOfQuestions == ""){
-                numOfQuestions = "4"
             }
 
 
