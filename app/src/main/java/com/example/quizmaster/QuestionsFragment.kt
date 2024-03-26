@@ -78,17 +78,8 @@ class QuestionsFragment : Fragment() {
 
         correctAnswerSound = MediaPlayer.create(context, R.raw.correctanswer)
         wrongAnswerSound = MediaPlayer.create(context, R.raw.wronganswer)
-
-        timer = object: CountDownTimer(20000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val secondsRemaining = millisUntilFinished / 1000
-                fragmentQuestionsBinding!!.counterTV.text = secondsRemaining.toString()
-            }
-
-            override fun onFinish() {
-                fragmentQuestionsBinding!!.submitBtn.performClick()
-            }
-        }
+        
+        startTimer()
 
         fetchQuizData()
 
@@ -128,6 +119,7 @@ class QuestionsFragment : Fragment() {
                 displayQuestion(quiz.results[questionIndex])
                 timer.cancel()
                 timer.start()
+
             }
         }
 
@@ -218,5 +210,20 @@ class QuestionsFragment : Fragment() {
         binding.questionProgressBar.progress = currentQuestionIndex
     }
 
+    // Add this function to your QuestionsFragment class
+    private fun startTimer() {
+        timer = object : CountDownTimer(20000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                fragmentQuestionsBinding!!.counterTV.text = secondsRemaining.toString()
+            }
+
+            override fun onFinish() {
+                fragmentQuestionsBinding!!.submitBtn.performClick()
+            }
+        }
+
+        timer.start()
+    }
 
 }
