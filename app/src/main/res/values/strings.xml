@@ -6,4 +6,8 @@
         Welcome to the Quiz App! Here are the instructions:
     </string>
 
+    <string name="toggle_mode_description">Toggle between dark and light modes</string>
+    <string name="toggle_to_dark_mode_description">Switch to dark mode</string>
+    <string name="toggle_to_light_mode_description">Switch to light mode</string>
+
 </resources>

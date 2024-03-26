@@ -1,10 +1,14 @@
 package com.example.quizmaster
 
 import android.Manifest
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -13,10 +17,23 @@ import com.example.quizmaster.databinding.ActivityMainBinding
 private const val REQUEST_STORAGE_PERMISSION_CODE = 200
 class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding:ActivityMainBinding
+    private lateinit var toolbar:Toolbar
+    private lateinit var sharedPreferences: SharedPreferences
+    private var isDarkMode = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
+
+        sharedPreferences = this.getSharedPreferences("DarkModeSharedPref", Context.MODE_PRIVATE)
+        isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        toolbar = activityMainBinding.toolbar
+        setSupportActionBar(toolbar)
+
+        activityMainBinding.lightDarkBtn.setOnClickListener {
+            toggleTheme()
+        }
 
         activityMainBinding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId){
@@ -81,5 +98,24 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun toggleTheme() {
+        val editor = sharedPreferences.edit()
+
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            toolbar.contentDescription = getString(R.string.toggle_to_light_mode_description)
+            editor.putBoolean("isDarkMode", false)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            toolbar.contentDescription = getString(R.string.toggle_to_dark_mode_description)
+            editor.putBoolean("isDarkMode", true)
+        }
+
+        editor.apply()
+
+        isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
     }
 }

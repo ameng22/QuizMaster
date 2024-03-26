@@ -30,7 +30,7 @@ class HomeFragment : Fragment(), QuizCategoryClickListener {
     private fun setupRecyclerView() {
         val quizCategories: List<QuizCategory> = listOf(
             QuizCategory("Sports", R.drawable.sports,21),
-            QuizCategory("Politics", R.drawable.ideas,24),
+            QuizCategory("Politics", R.drawable.politics,24),
             QuizCategory("Arts", R.drawable.art,25),
             QuizCategory("General", R.drawable.ideas,9),
             QuizCategory("Celebrity", R.drawable.fame,26),
