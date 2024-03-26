@@ -21,6 +21,7 @@ class QuestionSettingsFragment : Fragment() {
     private var selectedType:String = "multiple"
     private var selectedDifficulty:String = "easy"
     private var numOfQuestions:String = "4"
+    private var category: Int = 0
     private lateinit var name: String
     private lateinit var dob: String
     private lateinit var gender: String
@@ -33,6 +34,10 @@ class QuestionSettingsFragment : Fragment() {
         // Inflate the layout for this fragment
         fragmentQuizSettingsBinding =  FragmentQuizSettingsBinding.inflate(inflater, container, false)
         val view = fragmentQuizSettingsBinding!!.root
+
+        arguments?.let {
+            category = it.getInt(CATEGORY_KEY, 0)
+        }
 
         fragmentQuizSettingsBinding!!.editTextDob.setOnClickListener {
             showDatePicker()
@@ -84,7 +89,7 @@ class QuestionSettingsFragment : Fragment() {
             }
 
 
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionsFragment.newInstance(selectedType,selectedDifficulty.lowercase(),"9",numOfQuestions)).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionsFragment.newInstance(selectedType,selectedDifficulty.lowercase(),category.toString(),numOfQuestions)).commit()
         }
         return view
     }
@@ -107,6 +112,18 @@ class QuestionSettingsFragment : Fragment() {
             day
         )
         datePickerDialog.show()
+    }
+
+    companion object {
+        private const val CATEGORY_KEY = "category"
+
+        fun newInstance(category: Int): QuestionSettingsFragment {
+            val fragment = QuestionSettingsFragment()
+            val args = Bundle()
+            args.putInt(CATEGORY_KEY, category)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
 }

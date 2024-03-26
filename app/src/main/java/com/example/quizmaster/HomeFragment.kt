@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.quizmaster.databinding.FragmentHomeBinding
+import com.example.quizmaster.model.QuizCategory
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), QuizCategoryClickListener {
 
     private var fragmentHomeBinding:FragmentHomeBinding?=null
 
@@ -20,11 +22,34 @@ class HomeFragment : Fragment() {
 
         val view = fragmentHomeBinding!!.root
 
-        fragmentHomeBinding!!.generalCard.setOnClickListener{
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionSettingsFragment()).commit()
-        }
+        setupRecyclerView()
 
         return view;
+    }
+
+    private fun setupRecyclerView() {
+        val quizCategories: List<QuizCategory> = listOf(
+            QuizCategory("Sports", R.drawable.sports,21),
+            QuizCategory("Politics", R.drawable.ideas,24),
+            QuizCategory("Arts", R.drawable.art,25),
+            QuizCategory("General", R.drawable.ideas,9),
+            QuizCategory("Celebrity", R.drawable.fame,26),
+            QuizCategory("Movies", R.drawable.tv,11),
+            QuizCategory("History", R.drawable.history,23),
+            QuizCategory("Computer", R.drawable.gaming,18),
+            QuizCategory("Maths", R.drawable.tools,19),
+        )
+
+        val adapter = QuizAdapter(quizCategories, this)
+        fragmentHomeBinding?.quizRecyclerView?.adapter = adapter
+
+        fragmentHomeBinding?.quizRecyclerView?.layoutManager = GridLayoutManager(context, 4)
+    }
+
+    override fun onQuizCategoryClicked(quizCategory: QuizCategory) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment, QuestionSettingsFragment.newInstance(quizCategory.number))
+            .commit()
     }
 
     override fun onDestroy() {
