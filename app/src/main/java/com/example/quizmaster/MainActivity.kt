@@ -40,8 +40,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.home->{setFragment(HomeFragment())
                 true}
 
-                else -> {setFragment(HomeFragment())
-                true}
+                else -> false
             }
         }
 
@@ -116,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
 
         isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
 
     }
 }
