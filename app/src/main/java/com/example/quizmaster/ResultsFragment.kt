@@ -5,12 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -20,6 +22,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.quizmaster.databinding.FragmentResultsBinding
@@ -79,6 +82,10 @@ class ResultsFragment : Fragment() {
 
         binding?.saveBtn?.setOnClickListener {
             saveResult()
+        }
+
+        view.findViewById<Button>(R.id.educationalDocumentsBtn)?.setOnClickListener {
+            openEducationalDocuments()
         }
 
         return view
@@ -206,6 +213,24 @@ class ResultsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to save PDF", Toast.LENGTH_SHORT).show()
             }
 
+        }
+    }
+
+    fun openEducationalDocuments() {
+        // Replace "https://example.com/educational_documents.pdf" with your actual URL
+        val educationalDocumentsUrl = "https://www.khanacademy.org/"
+
+        // Create an intent to open the URL
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(educationalDocumentsUrl))
+
+        // Check if there's an app available to handle this intent
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            // Open the URL
+            startActivity(intent)
+        } else {
+            // If no app is available, show a toast or handle the situation accordingly
+            Toast.makeText(requireContext(), "No app found to open educational documents", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
