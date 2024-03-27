@@ -217,18 +217,16 @@ class ResultsFragment : Fragment() {
     }
 
     fun openEducationalDocuments() {
-        // Replace "https://example.com/educational_documents.pdf" with your actual URL
+
         val educationalDocumentsUrl = "https://www.khanacademy.org/"
 
-        // Create an intent to open the URL
+
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(educationalDocumentsUrl))
 
-        // Check if there's an app available to handle this intent
         if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            // Open the URL
+
             startActivity(intent)
         } else {
-            // If no app is available, show a toast or handle the situation accordingly
             Toast.makeText(requireContext(), "No app found to open educational documents", Toast.LENGTH_SHORT)
                 .show()
         }
