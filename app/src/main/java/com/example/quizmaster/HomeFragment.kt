@@ -1,5 +1,6 @@
 package com.example.quizmaster
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -46,7 +47,14 @@ class HomeFragment : Fragment(), QuizCategoryClickListener {
         fragmentHomeBinding?.quizRecyclerView?.layoutManager = GridLayoutManager(context, 4)
     }
 
-    override fun onQuizCategoryClicked(quizCategory: QuizCategory) {
+    override fun onQuizCategoryClicked(quizCategory: QuizCategory, title: String) {
+
+        val sharedPreferences = requireActivity().getSharedPreferences("QuizMasterPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("selectedQuizTitle", title)
+        editor.apply()
+
+
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, QuestionSettingsFragment.newInstance(quizCategory.number))
             .commit()

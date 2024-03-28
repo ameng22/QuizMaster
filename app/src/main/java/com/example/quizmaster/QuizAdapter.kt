@@ -28,7 +28,7 @@ class QuizAdapter(private val mList: List<QuizCategory>,private val clickListene
         holder.bind(quizCategory)
 
         holder.itemView.setOnClickListener {
-            clickListener.onQuizCategoryClicked(quizCategory)
+            clickListener.onQuizCategoryClicked(quizCategory,quizCategory.title)
         }
     }
 }

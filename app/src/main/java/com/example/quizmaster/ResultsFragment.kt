@@ -218,17 +218,32 @@ class ResultsFragment : Fragment() {
 
     fun openEducationalDocuments() {
 
-        val educationalDocumentsUrl = "https://www.khanacademy.org/"
+        val educationalDocumentsUrl = getEducationalUrlForQuiz()
 
-
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(educationalDocumentsUrl))
-
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+        if (educationalDocumentsUrl.isNotEmpty()) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(educationalDocumentsUrl))
 
             startActivity(intent)
         } else {
-            Toast.makeText(requireContext(), "No app found to open educational documents", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(), "No URL found for this quiz", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getEducationalUrlForQuiz(): String {
+        val sharedPreferences = requireActivity().getSharedPreferences("QuizMasterPrefs", Context.MODE_PRIVATE)
+        val selectedQuizTitle = sharedPreferences.getString("selectedQuizTitle", "") ?: ""
+
+        return when (selectedQuizTitle) {
+            "Sports" -> "https://archive.org/details/questionofsportq0000unse/mode/2up"
+            "Politics" -> "https://kwizzbit.com/politics-quiz-questions-and-answers/"
+            "Arts" -> "https://kwizzbit.com/art-quiz-questions-and-answers/"
+            "General" -> "https://www.cosmopolitan.com/uk/worklife/a32388181/best-general-knowledge-quiz-questions/"
+            "Celebrity" -> "https://thoughtcatalog.com/january-nelson/2021/10/celebrity-trivia/"
+            "Movies" -> "https://parade.com/977752/samuelmurrian/movie-trivia/"
+            "History" -> "https://www.rd.com/list/history-questions/"
+            "Computer" -> "https://www.proprofs.com/quiz-school/topic/computer"
+            "Maths" -> "https://www.proprofs.com/quiz-school/topic/math"
+            else -> ""
         }
     }
 
