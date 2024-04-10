@@ -40,6 +40,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.home->{setFragment(HomeFragment())
                 true}
 
+                R.id.results->{setFragment(PreviousResultFragment())
+                    true}
+
                 else -> false
             }
         }

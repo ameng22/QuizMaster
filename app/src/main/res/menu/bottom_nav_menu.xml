@@ -5,6 +5,9 @@
         android:id="@+id/home"
         android:title="Home"
         android:icon="@drawable/home"/>
-
+    <item
+        android:id="@+id/results"
+        android:title="Results"
+        android:icon="@drawable/results"/>
 
 </menu>
