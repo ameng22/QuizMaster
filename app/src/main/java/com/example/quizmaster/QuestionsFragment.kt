@@ -93,9 +93,11 @@ class QuestionsFragment : Fragment() {
                 val selectedOption = selectedRadioButton.text.toString()
                 try {
                     if (selectedOption == quiz.results[questionIndex].correctAnswer) {
+                        selectedRadioButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.correct_color))
                         correctAnswerSound.start()
                         correctAnswers++
                     } else {
+                        selectedRadioButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.wrong_color))
                         wrongAnswerSound.start()
                     }
                 } catch (e: Exception) {
@@ -113,12 +115,14 @@ class QuestionsFragment : Fragment() {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragment, ResultsFragment.newInstance(correctAnswers, quiz.results.size))
                         .commit()
-                }, 500)
+                }, 2000)
             } else {
                 // For other questions, display the next question
-                displayQuestion(quiz.results[questionIndex])
-                timer.cancel()
-                timer.start()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    displayQuestion(quiz.results[questionIndex])
+                    timer.cancel()
+                    timer.start()
+                }, 3000)
 
             }
         }
