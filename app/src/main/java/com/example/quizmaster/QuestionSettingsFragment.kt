@@ -46,7 +46,7 @@ class QuestionSettingsFragment : Fragment() {
 
         sharedPreferences = requireActivity().getSharedPreferences("ParticipantDetailsSharedPref", Context.MODE_PRIVATE)
 
-
+        //Added settings for the app. This was already implemented earlier
         fragmentQuizSettingsBinding!!.subBtn.setOnClickListener {
             val typeRadioGroup = fragmentQuizSettingsBinding!!.typeRadioGp
             val selectedTypeRadioButtonId = typeRadioGroup.checkedRadioButtonId
