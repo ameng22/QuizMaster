@@ -30,11 +30,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Duration
 
 private const val QUIZ_TYPE = "type"
 private const val QUIZ_DIFFICULTY= "difficulty"
 private const val QUIZ_CATEGORY= "category"
 private const val NUMBER_OF_QUESTIONS= "amount"
+private const val TIMER_DURATION = "timer"
+
 class QuestionsFragment : Fragment() {
     private lateinit var quiz: Quiz;
 
@@ -45,6 +48,7 @@ class QuestionsFragment : Fragment() {
     private var difficulty = ""
     private var category = ""
     private var amount = ""
+    private var timerDuration:Long = 0
     private lateinit var timer:CountDownTimer
     private lateinit var correctAnswerSound: MediaPlayer
     private lateinit var wrongAnswerSound: MediaPlayer
@@ -63,6 +67,7 @@ class QuestionsFragment : Fragment() {
             difficulty = it.getString(QUIZ_DIFFICULTY).toString()
             category = it.getString(QUIZ_CATEGORY).toString()
             amount = it.getString(NUMBER_OF_QUESTIONS).toString()
+            timerDuration = it.getLong(TIMER_DURATION)
         }
     }
 
@@ -79,7 +84,7 @@ class QuestionsFragment : Fragment() {
         correctAnswerSound = MediaPlayer.create(context, R.raw.correctanswer)
         wrongAnswerSound = MediaPlayer.create(context, R.raw.wronganswer)
         
-        startTimer()
+        startTimer(timerDuration)
 
         fetchQuizData()
 
@@ -140,13 +145,14 @@ class QuestionsFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(quizType: String, quizDifficulty: String, quizCategory:String,numOfQuestions:String) =
+        fun newInstance(quizType: String, quizDifficulty: String, quizCategory:String,numOfQuestions:String,timerDuration: Long) =
             QuestionsFragment().apply {
                 arguments = Bundle().apply {
                     putString(QUIZ_TYPE, quizType)
                     putString(QUIZ_DIFFICULTY, quizDifficulty)
                     putString(QUIZ_CATEGORY,quizCategory)
                     putString(NUMBER_OF_QUESTIONS,numOfQuestions)
+                    putLong(TIMER_DURATION,timerDuration)
                 }
             }
     }
@@ -213,10 +219,9 @@ class QuestionsFragment : Fragment() {
     private fun updateProgress(currentQuestionIndex:Int) {
         binding.questionProgressBar.progress = currentQuestionIndex
     }
-
-    // Add this function to your QuestionsFragment class
-    private fun startTimer() {
-        timer = object : CountDownTimer(20000, 1000) {
+    
+    private fun startTimer(timerDuration: Long) {
+        timer = object : CountDownTimer(timerDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = millisUntilFinished / 1000
                 fragmentQuestionsBinding!!.counterTV.text = secondsRemaining.toString()

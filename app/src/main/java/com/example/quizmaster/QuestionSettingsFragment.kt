@@ -22,6 +22,7 @@ class QuestionSettingsFragment : Fragment() {
     private var selectedDifficulty:String = "easy"
     private var numOfQuestions:String = "4"
     private var category: Int = 0
+    private var timerDuration: Long = 20
     private lateinit var name: String
     private lateinit var dob: String
     private lateinit var gender: String
@@ -55,6 +56,8 @@ class QuestionSettingsFragment : Fragment() {
             val genderRadioGroup = fragmentQuizSettingsBinding!!.radioGroupGender
             val selectedGenderRadioButtonId = genderRadioGroup.checkedRadioButtonId
             val selectedGenderRadioButton = view.findViewById<RadioButton>(selectedGenderRadioButtonId)
+            timerDuration = fragmentQuizSettingsBinding!!.timerDuration.text.toString().toLong()
+            timerDuration *= 1000
             gender = selectedGenderRadioButton.text.toString()
 
             numOfQuestions = fragmentQuizSettingsBinding!!.noOfQuestions.text.toString()
@@ -89,7 +92,7 @@ class QuestionSettingsFragment : Fragment() {
             }
 
 
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionsFragment.newInstance(selectedType,selectedDifficulty.lowercase(),category.toString(),numOfQuestions)).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionsFragment.newInstance(selectedType,selectedDifficulty.lowercase(),category.toString(),numOfQuestions,timerDuration)).commit()
         }
         return view
     }
