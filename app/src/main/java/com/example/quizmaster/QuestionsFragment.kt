@@ -139,6 +139,7 @@ class QuestionsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentQuestionsBinding = null
+        timer.cancel()
         correctAnswerSound.release()
         wrongAnswerSound.release()
     }

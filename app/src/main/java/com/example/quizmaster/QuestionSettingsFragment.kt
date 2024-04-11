@@ -56,17 +56,23 @@ class QuestionSettingsFragment : Fragment() {
             val genderRadioGroup = fragmentQuizSettingsBinding!!.radioGroupGender
             val selectedGenderRadioButtonId = genderRadioGroup.checkedRadioButtonId
             val selectedGenderRadioButton = view.findViewById<RadioButton>(selectedGenderRadioButtonId)
-            timerDuration = fragmentQuizSettingsBinding!!.timerDuration.text.toString().toLong()
-            timerDuration *= 1000
+            val text = fragmentQuizSettingsBinding?.timerDuration?.text?.toString()
+            timerDuration = if (text?.isNotEmpty() == true) {
+                text.toLong()
+            } else {
+                20
+            }
             gender = selectedGenderRadioButton.text.toString()
 
             numOfQuestions = fragmentQuizSettingsBinding!!.noOfQuestions.text.toString()
 
-            if (name.isEmpty() || dob.isEmpty()||numOfQuestions.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter all fields", Toast.LENGTH_SHORT)
+            if (name.isEmpty() || dob.isEmpty()||numOfQuestions.isEmpty() || numOfQuestions == "0" || timerDuration == 0.toLong()) {
+                Toast.makeText(requireContext(), "Please enter all fields or valid input is required", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
+
+            timerDuration *= 1000
 
             with(sharedPreferences.edit()) {
                 putString("name", name)
@@ -90,7 +96,6 @@ class QuestionSettingsFragment : Fragment() {
             if (selectedDifficulty=="Med"){
                 selectedDifficulty = "medium"
             }
-
 
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.main_fragment,QuestionsFragment.newInstance(selectedType,selectedDifficulty.lowercase(),category.toString(),numOfQuestions,timerDuration)).commit()
         }
